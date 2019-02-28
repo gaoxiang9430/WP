@@ -12,4 +12,4 @@ multi-func: multi-func.c
 	${CC} $@.bc -o $@
 
 clean:
-	rm -f *.bc if-else
+	rm -f *.bc if-else multi-func
