@@ -1,18 +1,17 @@
-CC=clang
-CFALGS=-emit-llvm -S
-CC_LINK=llvm-link
-LINK_FLAGS=-S
+CXX=g++
+CXXFLAGS=-fno-rtti -O0 -g
+LLVM_CXXFLAGS=`llvm-config --cxxflags`
+LLVM_LDFLAGS := `llvm-config --ldflags --libs --system-libs`
 
-all: if-else multi-func
+all: TestControlFlowAnalysis cfa
+	${CXX} ${CXXFLAGS} TestControlFlowAnalysis.o cfa.o ${LLVM_CXXFLAGS} ${LLVM_LDFLAGS} -o TestControlFlowAnalysis
 
-if-else: if-else.c
-	${CC} ${CFALGS} $^ -o $@.bc
-	${CC} $@.bc -o $@
+TestControlFlowAnalysis: TestControlFlowAnalysis.cpp
+	${CXX} ${CXXFLAGS} $^ ${LLVM_CXXFLAGS} ${LLVM_LDFLAGS} -c -o $@.o
 
-multi-func: multi-func.c sub-func.c
-	${CC} ${CFALGS} multi-func.c -o multi-func.bc
-	${CC} ${CFALGS} sub-func.c -o sub-func.bc
-	${CC_LINK} -S sub-func.bc multi-func.bc -o all.bc
+cfa: ../src/ControlFlowAnalyzer.cpp
+	${CXX} ${CXXFLAGS} $^ ${LLVM_CXXFLAGS} ${LLVM_LDFLAGS} -c -o $@.o
 
 clean:
-	rm -f *.bc if-else multi-func *.dot *.out
+	rm *.dot *.o
+

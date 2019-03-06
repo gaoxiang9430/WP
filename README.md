@@ -1,1 +1,1 @@
-# Inter-CFG
+# Weakest precondition generation
